@@ -14,6 +14,7 @@ namespace Mx.NET.SDK.Wallet.Wallet
     {
         public int Version { get; set; }
         public string Id { get; set; }
+        public string Kind { get; set; }
         public string Address { get; set; }
         public string Bech32 { get; set; }
         public Crypto Crypto { get; set; }
@@ -26,7 +27,19 @@ namespace Mx.NET.SDK.Wallet.Wallet
         private static KeyFile FromFilePath(string filePath)
         {
             var json = File.ReadAllText(filePath);
-            return JsonWrapper.Deserialize<KeyFile>(json);
+            return JsonSerializerWrapper.Deserialize<KeyFile>(json);
+        }
+        /// <summary>
+        /// Save a KeyFile object from a json file path
+        /// </summary>
+        /// <param name="filePath">JSON String</param>
+        /// <param name="file">KeyFile Object</param>
+        /// <returns>KeyFile object</returns>
+        public static void SaveToFile(string filePath, KeyFile file)
+        {
+            StreamWriter writer = new StreamWriter(filePath);
+            writer.Write(JsonSerializerWrapper.Serialize(file));
+            writer.Close();
         }
 
         public static byte[] DecryptSecretKey(string filePath, string password)
@@ -38,8 +51,9 @@ namespace Mx.NET.SDK.Wallet.Wallet
             var key = SCrypt.Generate(Encoding.UTF8.GetBytes(password), saltBytes, kdParams.N, kdParams.r,
                                       kdParams.p, kdParams.dklen);
 
-            var rightPartOfKey = key.Skip(16).Take(16).ToArray();
             var leftPartOfKey = key.Take(16).ToArray();
+            var rightPartOfKey = key.Skip(16).Take(16).ToArray();
+
             var mac = CreateSha256Signature(rightPartOfKey, keyFile.Crypto.Ciphertext);
             if (mac != keyFile.Crypto.Mac)
                 throw new Exception("MAC mismatch, possibly wrong password");
@@ -47,6 +61,12 @@ namespace Mx.NET.SDK.Wallet.Wallet
             var decipher = EncryptAes128Ctr(Converter.FromHexString(keyFile.Crypto.Ciphertext),
                                             leftPartOfKey,
                                             Converter.FromHexString(keyFile.Crypto.Cipherparams.Iv));
+
+            if (keyFile.Kind == "mnemonic")
+            {
+                var mnemonicDecoded = Encoding.UTF8.GetString(Converter.FromHexString(decipher));
+                return Mnemonic.DecryptSecretKey(mnemonicDecoded);
+            }
 
             return Converter.FromHexString(decipher);
         }
@@ -113,6 +133,7 @@ namespace Mx.NET.SDK.Wallet.Wallet
             var output = AesCtr.Encrypt(key, iv, data);
             return Converter.ToHexString(output).ToLowerInvariant();
         }
+
     }
 
     public class Crypto

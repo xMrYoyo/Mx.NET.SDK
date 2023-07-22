@@ -43,23 +43,23 @@ namespace Mx.NET.SDK.Provider
             var response = await _httpAPIClient.GetAsync($"{uri}");
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
-                throw new APIException(JsonWrapper.Deserialize<APIExceptionResponse>(content));
+                throw new APIException(JsonSerializerWrapper.Deserialize<APIExceptionResponse>(content));
 
-            var result = JsonWrapper.Deserialize<TR>(content);
+            var result = JsonSerializerWrapper.Deserialize<TR>(content);
             return result;
         }
 
         public async Task<TR> Post<TR>(string requestUri, object requestContent)
         {
             var uri = requestUri.StartsWith("/") ? requestUri.Substring(1) : requestUri;
-            var raw = JsonWrapper.Serialize(requestContent);
+            var raw = JsonSerializerWrapper.Serialize(requestContent);
             var payload = new StringContent(raw, Encoding.UTF8, "application/json");
             var response = await _httpAPIClient.PostAsync(uri, payload);
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
-                throw new APIException(JsonWrapper.Deserialize<APIExceptionResponse>(content));
+                throw new APIException(JsonSerializerWrapper.Deserialize<APIExceptionResponse>(content));
 
-            var result = JsonWrapper.Deserialize<TR>(content);
+            var result = JsonSerializerWrapper.Deserialize<TR>(content);
             return result;
         }
 

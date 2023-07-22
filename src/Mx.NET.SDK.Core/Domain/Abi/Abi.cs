@@ -13,6 +13,13 @@ namespace Mx.NET.SDK.Core.Domain.Abi
             public bool MultiArg { get; set; }
         }
 
+        public class InputEvent
+        {
+            public string Name { get; set; }
+            public string Type { get; set; }
+            public bool Indexed { get; set; }
+        }
+
         public class CustomTypes
         {
             public string Type { get; set; }
@@ -38,6 +45,12 @@ namespace Mx.NET.SDK.Core.Domain.Abi
             public Input[] Inputs { get; set; }
             public Output[] Outputs { get; set; }
             public string[] PayableInTokens { get; set; }
+        }
+
+        public class Events
+        {
+            public string Identifier { get; set; }
+            public InputEvent[] Inputs { get; set; }
         }
 
         public class Output

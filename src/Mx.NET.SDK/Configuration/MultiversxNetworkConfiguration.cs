@@ -6,7 +6,7 @@ namespace Mx.NET.SDK.Configuration
     {
         public Network Network { get; }
         public Uri APIUri { get; }
-        public Uri GatewayUri { get; }
+        public Uri GatewayUri { get; set; }
         public Uri ExplorerUri { get; }
         public Uri WebWalletUri { get; set; }
 

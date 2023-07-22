@@ -41,7 +41,7 @@ namespace Mx.NET.SDK.Provider
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new APIException(content);
 
-            var result = JsonWrapper.Deserialize<GatewayResponseDto<TR>>(content);
+            var result = JsonSerializerWrapper.Deserialize<GatewayResponseDto<TR>>(content);
             result.EnsureSuccessStatusCode();
             return result.Data;
         }
@@ -49,7 +49,7 @@ namespace Mx.NET.SDK.Provider
         public async Task<TR> PostGW<TR>(string requestUri, object requestContent)
         {
             var uri = requestUri.StartsWith("/") ? requestUri.Substring(1) : requestUri;
-            var raw = JsonWrapper.Serialize(requestContent);
+            var raw = JsonSerializerWrapper.Serialize(requestContent);
             var payload = new StringContent(raw, Encoding.UTF8, "application/json");
             var response = await _httpGatewayClient.PostAsync(uri, payload);
 
@@ -57,7 +57,7 @@ namespace Mx.NET.SDK.Provider
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new APIException(content);
 
-            var result = JsonWrapper.Deserialize<GatewayResponseDto<TR>>(content);
+            var result = JsonSerializerWrapper.Deserialize<GatewayResponseDto<TR>>(content);
             result.EnsureSuccessStatusCode();
             return result.Data;
         }
@@ -69,7 +69,7 @@ namespace Mx.NET.SDK.Provider
 
         public async Task<AccountDto> GetAddress(string address)
         {
-            return await GetGW<AccountDto>($"address/{address}");
+            return (await GetGW<AccountDataDto>($"address/{address}")).Account;
         }
         public async Task<GatewayAddressGuardianDataDto> GetAccountGuardianData(string address)
         {
@@ -118,11 +118,11 @@ namespace Mx.NET.SDK.Provider
         }
         public async Task<InternalBlockDto> GetInternalBlockNonce(long nonce)
         {
-            return await GetGW<InternalBlockDto>($"/internal/json/shardblock/by-nonce/{nonce}");
+            return (await GetGW<InternalBlockResponseDto>($"/internal/json/shardblock/by-nonce/{nonce}")).Block;
         }
         public async Task<InternalBlockDto> GetInternalBlockHash(string hash)
         {
-            return await GetGW<InternalBlockDto>($"/internal/json/shardblock/by-hash/{hash}");
+            return (await GetGW<InternalBlockResponseDto>($"/internal/json/shardblock/by-hash/{hash}")).Block;
         }
 
         public async Task<TransactionDto> GetTransactionDetail(string txHash)

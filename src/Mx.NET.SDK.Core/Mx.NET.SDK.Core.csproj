@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<LangVersion>9.0</LangVersion>
 		<Description>⚡ MultiversX .NET SDK: Core components for Mx.NET.SDK</Description>
-		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net461;net47;net5.0;net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>net6.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>RemarkableTools.Mx.Core</PackageId>
 		<Authors>Remarkable Tools</Authors>

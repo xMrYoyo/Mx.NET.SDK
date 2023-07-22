@@ -55,18 +55,37 @@ namespace Mx.NET.SDK.Core.Domain.Values
 
         public override T ToObject<T>()
         {
-            return JsonWrapper.Deserialize<T>(ToJson());
+            return JsonSerializerWrapper.Deserialize<T>(ToJson());
         }
 
         public override string ToJson()
         {
-            var dict = new Dictionary<string, object>();
+            var dic = new Dictionary<string, object>();
             foreach (var field in Fields)
             {
-                dict.Add(field.Name, field.Value.ToJson());
+                if (field.Value.Type.BinaryType == TypeValue.BinaryTypes.Struct)
+                {
+                    var json = field.Value.ToJson();
+                    var jsonObject = JsonSerializerWrapper.Deserialize<object>(json);
+                    dic.Add(field.Name, jsonObject);
+                }
+                else if (field.Value.Type.BinaryType == TypeValue.BinaryTypes.Enum)
+                {
+                    dic.Add(field.Name, int.Parse(((EnumValue)field.Value).Value.Discriminant.ToString()));
+                }
+                else if (field.Value.Type.BinaryType == TypeValue.BinaryTypes.List)
+                {
+                    var json = field.Value.ToJson();
+                    var jsonObject = JsonSerializerWrapper.Deserialize<object>(json);
+                    dic.Add(field.Name, jsonObject);
+                }
+                else
+                {
+                    dic.Add(field.Name, field.ToString());
+                }
             }
 
-            return JsonUnqtWrapper.Serialize(dict);
+            return JsonSerializerWrapper.Serialize(dic);
         }
     }
 }

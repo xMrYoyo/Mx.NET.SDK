@@ -19,7 +19,7 @@ namespace Mx.NET.SDK.Core.Domain.Values
 
         public virtual T ToObject<T>()
         {
-            return JsonWrapper.Deserialize<T>(ToJson());
+            return JsonSerializerWrapper.Deserialize<T>(ToJson());
         }
 
         public virtual string ToJson()
@@ -27,13 +27,13 @@ namespace Mx.NET.SDK.Core.Domain.Values
             if (string.IsNullOrEmpty(Type.Name))
             {
                 var kv = new KeyValuePair<string, string>(Type.Name ?? "", ToString());
-                var json = JsonWrapper.Serialize(kv);
+                var json = JsonSerializerWrapper.Serialize(kv);
                 return json;
             }
             else
             {
                 var kv = new Dictionary<string, string> { { Type.Name, ToString() } };
-                var json = JsonWrapper.Serialize(kv);
+                var json = JsonSerializerWrapper.Serialize(kv);
                 return json;
             }
         }

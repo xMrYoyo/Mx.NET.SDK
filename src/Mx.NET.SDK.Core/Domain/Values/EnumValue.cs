@@ -21,7 +21,7 @@ namespace Mx.NET.SDK.Core.Domain.Values
 
         public override T ToObject<T>()
         {
-            return JsonWrapper.Deserialize<T>(ToJson());
+            return JsonSerializerWrapper.Deserialize<T>(ToJson());
         }
 
         public override string ToJson()
@@ -31,7 +31,7 @@ namespace Mx.NET.SDK.Core.Domain.Values
                 { Value.Name, Value.Discriminant.ToString() }
             };
 
-            return JsonWrapper.Serialize(dic);
+            return JsonSerializerWrapper.Serialize(dic);
         }
     }
 }

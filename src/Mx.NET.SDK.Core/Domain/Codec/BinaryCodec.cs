@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Mx.NET.SDK.Core.Domain.Exceptions;
+﻿using Mx.NET.SDK.Core.Domain.Exceptions;
 using Mx.NET.SDK.Core.Domain.Values;
+using System.Collections.Generic;
+using System.Linq;
+using static Mx.NET.SDK.Core.Domain.Values.TypeValue;
 
 namespace Mx.NET.SDK.Core.Domain.Codec
 {
@@ -21,8 +22,6 @@ namespace Mx.NET.SDK.Core.Domain.Codec
                 new StructBinaryCodec(this),
                 new OptionBinaryCodec(this),
                 new MultiBinaryCodec(this),
-                new TupleBinaryCodec(this),
-                new VariadicBinaryCodec(this),
                 new ListBinaryCodec(this),
                 new ArrayBinaryCodec(this),
                 new EnumBinaryCodec(this),
@@ -34,6 +33,10 @@ namespace Mx.NET.SDK.Core.Domain.Codec
             CheckBufferLength(data);
 
             var codec = _codecs.SingleOrDefault(c => c.Type == type.BinaryType);
+            if (codec?.Type == BinaryTypes.Struct && type.RustType == "enum")
+            {
+                codec = _codecs.Last();
+            }
             if (codec == null)
                 throw new BinaryCodecException($"No codec found for {type.BinaryType}");
 

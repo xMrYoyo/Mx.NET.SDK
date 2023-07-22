@@ -26,6 +26,7 @@ namespace Mx.NET.SDK.Core.Domain.Codec
             {
                 var (value, bytesLength) = _binaryCodec.DecodeNested(data, fieldDefinition.Type);
                 fields.Add(new StructField(fieldDefinition.Name, value));
+
                 offset += bytesLength;
                 data = originalBuffer.Slice(offset);
             }

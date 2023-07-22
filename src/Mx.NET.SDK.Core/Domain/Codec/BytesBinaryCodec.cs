@@ -1,6 +1,9 @@
-﻿using System.Linq;
-using Mx.NET.SDK.Core.Domain.Helper;
+﻿using Mx.NET.SDK.Core.Domain.Helper;
 using Mx.NET.SDK.Core.Domain.Values;
+using System;
+using System.Buffers.Binary;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Mx.NET.SDK.Core.Domain.Codec
 {
@@ -12,10 +15,16 @@ namespace Mx.NET.SDK.Core.Domain.Codec
 
         public (IBinaryType Value, int BytesLength) DecodeNested(byte[] data, TypeValue type)
         {
-            var sizeInBytes = data.ReadUInt32BE(0);
+            var sizeInBytes = (int)BinaryPrimitives.ReadUInt32BigEndian(data.Take(BytesSizeOfU32).ToArray());
+            //var sizeInBytes = (int)BitConverter.ToUInt32(data.Take(BytesSizeOfU32).ToArray(), 0);
+            //if (BitConverter.IsLittleEndian)
+            //{
+            //    sizeInBytes = (int)BitConverter.ToUInt32(BitConverter.GetBytes(sizeInBytes).Reverse().ToArray(), 0);
+            //}
+
             var payload = data.Slice(BytesSizeOfU32, BytesSizeOfU32 + sizeInBytes);
 
-            return (new BytesValue(payload, type), BytesSizeOfU32 + payload.Length);
+            return (new BytesValue(payload, type), sizeInBytes + 4);
         }
 
         public IBinaryType DecodeTopLevel(byte[] data, TypeValue type)
@@ -25,13 +34,20 @@ namespace Mx.NET.SDK.Core.Domain.Codec
 
         public byte[] EncodeNested(IBinaryType value)
         {
-            var bytesValueObject = value.ValueOf<BytesValue>();
+            var bytes = value.ValueOf<BytesValue>();
+            var buffer = new List<byte>();
+            var lengthBytes = BitConverter.GetBytes(bytes.GetLength());
+            if (BitConverter.IsLittleEndian)
+            {
+                lengthBytes = lengthBytes.Reverse().ToArray();
+            }
 
-            var lengthBuffer = new byte[4];
-            lengthBuffer.WriteUInt32BE(bytesValueObject.GetLength());
+            buffer.AddRange(lengthBytes);
+            buffer.AddRange(bytes.Buffer);
 
-            var data = lengthBuffer.Concat(bytesValueObject.Buffer);
-            return data.ToArray();
+            var data = buffer.ToArray();
+
+            return data;
         }
 
         public byte[] EncodeTopLevel(IBinaryType value)

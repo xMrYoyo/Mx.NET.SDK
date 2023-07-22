@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Numerics;
 using Mx.NET.SDK.Core.Domain.Helper;
 using Mx.NET.SDK.Core.Domain.Values;
@@ -22,11 +23,16 @@ namespace Mx.NET.SDK.Core.Domain.Codec
             }
             else
             {
-                var sizeInBytes = data.ReadUInt32BE(0);
-                var payload = data.Slice(BytesSizeOfU32, BytesSizeOfU32 + sizeInBytes);
-                var bigNumber = Converter.ToBigInteger(payload, !type.HasSign(), isBigEndian: true);
+                const int u32Size = 4;
+                var sizeInBytes = (int)BitConverter.ToUInt32(data.Slice(0, u32Size), 0);
+                if (BitConverter.IsLittleEndian)
+                {
+                    sizeInBytes = (int)BitConverter.ToUInt32(data.Slice(0, u32Size).Reverse().ToArray(), 0);
+                }
 
-                return (new NumericValue(type, bigNumber), sizeInBytes + payload.Length);
+                var payload = data.Skip(u32Size).Take(sizeInBytes).ToArray();
+                var bigNumber = Converter.ToBigInteger(payload, !type.HasSign(), isBigEndian: true);
+                return (new NumericValue(type, bigNumber), sizeInBytes + u32Size);
             }
         }
 

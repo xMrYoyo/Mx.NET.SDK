@@ -14,7 +14,7 @@ namespace Mx.NET.SDK.Wallet
         public static TransactionRequestDto SignTransaction(this WalletSigner signer, TransactionRequest transactionRequest)
         {
             var transactionRequestDto = transactionRequest.GetTransactionRequest();
-            var json = JsonWrapper.Serialize(transactionRequestDto);
+            var json = JsonSerializerWrapper.Serialize(transactionRequestDto);
             var message = Encoding.UTF8.GetBytes(json);
 
             transactionRequestDto.Signature = signer.Sign(message);
@@ -28,7 +28,7 @@ namespace Mx.NET.SDK.Wallet
             foreach (var transactionRequest in transactionsRequest)
             {
                 var transactionRequestDto = transactionRequest.GetTransactionRequest();
-                var json = JsonWrapper.Serialize(transactionRequestDto);
+                var json = JsonSerializerWrapper.Serialize(transactionRequestDto);
                 var message = Encoding.UTF8.GetBytes(json);
 
                 transactionRequestDto.Signature = signer.Sign(message);
@@ -41,7 +41,7 @@ namespace Mx.NET.SDK.Wallet
         public static bool VerifySignature(this TransactionRequest transactionRequest, string signature)
         {
             var transactionRequestDto = transactionRequest.GetTransactionRequest();
-            var message = JsonWrapper.Serialize(transactionRequestDto);
+            var message = JsonSerializerWrapper.Serialize(transactionRequestDto);
 
             var verifier = WalletVerifier.FromAddress(transactionRequest.Sender);
             return verifier.VerifyRaw(new SignableMessage()

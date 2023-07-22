@@ -27,7 +27,7 @@ namespace MSTesting
                 }
             };
 
-            provider.Setup(s => s.QueryVm(It.IsAny<QueryVmRequestDto>())).ReturnsAsync(queryResponse);
+            //provider.Setup(s => s.QueryVm(It.IsAny<QueryVmRequestDto>())).ReturnsAsync(queryResponse);
         }
     }
 }

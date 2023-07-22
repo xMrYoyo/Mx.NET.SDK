@@ -4,14 +4,15 @@ using Newtonsoft.Json.Serialization;
 
 namespace Mx.NET.SDK.Core.Domain.Helper
 {
-    public class JsonWrapper
+    public class JsonSerializerWrapper
     {
         public static string Serialize(object value)
         {
-            var serializerSettings = new JsonSerializerSettings()
+            var serializerSettings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
             };
             return JsonConvert.SerializeObject(value, serializerSettings);
         }
@@ -19,9 +20,11 @@ namespace Mx.NET.SDK.Core.Domain.Helper
         public static TValue Deserialize<TValue>(string json)
         {
             if (json == null)
+            {
                 throw new ArgumentNullException(nameof(json));
+            }
 
-            var serializerSettings = new JsonSerializerSettings()
+            var serializerSettings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()

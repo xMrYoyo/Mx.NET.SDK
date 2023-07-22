@@ -147,7 +147,7 @@ namespace Mx.NET.SDK.Core.Domain.Values
 
         public override string ToJson()
         {
-            return JsonWrapper.Serialize(this);
+            return JsonSerializerWrapper.Serialize(this);
         }
     }
 }

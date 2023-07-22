@@ -34,7 +34,7 @@ namespace Mx.NET.SDK.Core.Domain.Values
 
         public override T ToObject<T>()
         {
-            return JsonWrapper.Deserialize<T>(ToJson());
+            return JsonSerializerWrapper.Deserialize<T>(ToJson());
         }
 
         public override string ToJson()
@@ -46,7 +46,7 @@ namespace Mx.NET.SDK.Core.Domain.Values
                 if (value.Type.BinaryType == TypeValue.BinaryTypes.Struct)
                 {
                     var json = value.ToJson();
-                    var jsonObject = JsonWrapper.Deserialize<object>(json);
+                    var jsonObject = JsonSerializerWrapper.Deserialize<object>(json);
                     list.Add(jsonObject);
                 }
                 else
@@ -55,7 +55,7 @@ namespace Mx.NET.SDK.Core.Domain.Values
                 }
             }
 
-            return JsonWrapper.Serialize(list);
+            return JsonSerializerWrapper.Serialize(list);
         }
     }
 }

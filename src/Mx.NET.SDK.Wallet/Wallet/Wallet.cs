@@ -109,7 +109,7 @@ namespace Mx.NET.SDK.Wallet.Wallet
         /// <returns>string to save</returns>
         public string SerializeKeyFile(KeyFile keyFile)
         {
-            return JsonWrapper.Serialize(keyFile);
+            return JsonSerializerWrapper.Serialize(keyFile);
         }
     }
 }
