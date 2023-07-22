@@ -37,10 +37,14 @@ namespace Mx.NET.SDK.Core.Domain.Abi
             if (data == null)
                 throw new Exception("Endpoint is not define in ABI");
 
+<<<<<<< HEAD
             var inputs = data.Inputs.Select(i => new FieldDefinition(i.Name, "", GetTypeValue(i.Type))).ToList();
             return new EventDefinition(identifier, inputs.ToArray());
         }
         public TypeValue GetTypeValue(string rustType)
+=======
+        private TypeValue GetTypeValue(string rustType)
+>>>>>>> 5b6b03104aa5cb630661d10eabcd57e615c76864
         {
             var optional = new Regex("^optional<(.*)>$");
             var option = new Regex("^Option<(.*)>$");
@@ -91,6 +95,30 @@ namespace Mx.NET.SDK.Core.Domain.Abi
                 var innerTypeValues = innerTypes.Select(GetTypeValue).ToArray();
                 return TypeValue.MultiValue(innerTypeValues);
             }
+<<<<<<< HEAD
+=======
+
+            if (variadic.IsMatch(rustType))
+            {
+                var innerType = variadic.Match(rustType).Groups[1].Value;
+                var innerTypeValue = GetTypeValue(innerType);
+                return TypeValue.VariadicValue(innerTypeValue);
+            }
+
+            if (list.IsMatch(rustType))
+            {
+                var innerType = list.Match(rustType).Groups[1].Value;
+                var innerTypeValue = GetTypeValue(innerType);
+                return TypeValue.ListValue(innerTypeValue);
+            }
+            if (array.IsMatch(rustType))
+            {
+                var innerType = list.Match(rustType).Groups[1].Value;
+                var innerTypeValue = GetTypeValue(innerType);
+                return TypeValue.ArrayValue(innerTypeValue);
+            }
+
+>>>>>>> 5b6b03104aa5cb630661d10eabcd57e615c76864
             var typeFromBaseRustType = TypeValue.FromRustType(rustType);
             if (typeFromBaseRustType != null)
                 return typeFromBaseRustType;
@@ -117,7 +145,10 @@ namespace Mx.NET.SDK.Core.Domain.Abi
                         .ToArray());
 
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5b6b03104aa5cb630661d10eabcd57e615c76864
             }
 
             return null;
