@@ -11,20 +11,34 @@ namespace Mx.NET.SDK.Core.Domain
         public ESDT Esdt { get; }
         public BigInteger Value { get; }
 
-        private ESDTAmount(long value, ESDT token)
+        protected ESDTAmount(long value, ESDT token)
         {
             Esdt = token;
             Value = new BigInteger(value);
         }
-
-        private ESDTAmount(string value, ESDT token)
+        protected ESDTAmount(BigInteger value, ESDT token)
+        {
+            Esdt = token;
+            Value = value;
+        }
+        protected ESDTAmount(string value, ESDT token)
         {
             Esdt = token;
             Value = BigInteger.Parse(value);
             if (Value.Sign == -1)
                 throw new InvalidESDTAmountException(value);
         }
+        protected ESDTAmount(decimal value, ESDT token)
+        {
+            Esdt = token;
 
+            var split = value.ToString().Split('.');
+
+            var integerPart = split.FirstOrDefault() ?? "0";
+            var decimalPart = split.Length == 2 ? split[1].PadRight(18, '0').Substring(0, token.DecimalPrecision) : string.Empty;
+            var full = $"{integerPart}{decimalPart.PadRight(token.DecimalPrecision, '0')}";
+            Value = BigInteger.Parse(full);
+        }
         public static bool operator >(ESDTAmount amount1, ESDTAmount amount2)
         {
             if (!amount1.Esdt.Equals(amount2.Esdt))
@@ -176,6 +190,14 @@ namespace Mx.NET.SDK.Core.Domain
         }
 
         /// <summary>
+        /// Decimal value of the denominated value
+        /// </summary>
+        /// <returns></returns>
+        public decimal ToDecimal()
+        {
+            return decimal.Parse(ToDenominated(), CultureInfo.InvariantCulture);
+        }
+        /// <summary>
         /// Creates a token amount object from an eGLD value (denomination will be applied).
         /// </summary>
         /// <param name="value"></param>
@@ -212,7 +234,16 @@ namespace Mx.NET.SDK.Core.Domain
                 token = Domain.ESDT.EGLD();
             return new ESDTAmount(value, token);
         }
-
+        public static ESDTAmount From(BigInteger value, ESDT token = null)
+        {
+            if (token == null)
+                token = Domain.ESDT.EGLD();
+            return new ESDTAmount(value, token);
+        }
+        public static ESDTAmount From(decimal value, ESDT token = null)
+        {
+            return new ESDTAmount(value, token);
+        }
         public static ESDTAmount From(long value, ESDT token = null)
         {
             if (token == null)
