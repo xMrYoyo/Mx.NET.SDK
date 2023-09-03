@@ -85,5 +85,30 @@ namespace Mx.NET.SDK.Core.Domain.Helper
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
         }
+        public static string FromBase64ToUtf8(string base64EncodedData)
+        {
+            var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
+            return Encoding.UTF8.GetString(base64EncodedBytes);
+        }
+        public static string FromBase64ToHex(string base64EncodedData)
+        {
+            // Convierte la cadena Base64 a bytes
+            byte[] bytes = Convert.FromBase64String(base64EncodedData);
+
+            // Convierte los bytes a una representación hexadecimal
+            string hexString = BitConverter.ToString(bytes).Replace("-", "");
+
+            return hexString;
+        }
+        public static BigInteger FromBase64ToBigInteger(string base64EncodedData)
+        {
+            // Convierte la cadena Base64 a bytes
+            byte[] bytes = Convert.FromBase64String(base64EncodedData);
+
+            // Convierte los bytes en un valor BigInteger
+            BigInteger bigIntegerValue = new BigInteger(bytes);
+            
+            return bigIntegerValue;
+        }
     }
 }

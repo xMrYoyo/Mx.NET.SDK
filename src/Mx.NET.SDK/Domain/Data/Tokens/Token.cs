@@ -122,7 +122,7 @@ namespace Mx.NET.SDK.Domain.Data.Tokens
                 Minted = token.Minted,
                 Burnt = token.Burnt,
                 InitialMinted = token.InitialMinted is null ? null : ESDTAmount.From(token.InitialMinted,
-                                                                                      ESDT.TOKEN(token.Name, token.Identifier, token.Decimals)),
+                                                                     ESDT.TOKEN(token.Name, token.Identifier, token.Decimals)),
                 Decimals = token.Decimals,
                 IsPaused = token.IsPaused,
                 Assets = token.Assets,
@@ -143,6 +143,46 @@ namespace Mx.NET.SDK.Domain.Data.Tokens
                 Roles = TokenRoles.From(token.Roles)
             };
         }
+
+        /// <summary>
+        /// Creates a new Token from data
+        /// </summary>
+        /// <param name="token">Token Data Object from API</param>
+        /// <returns>Token object</returns>
+        public static Token From(Mx.NET.SDK.Provider.Dtos.Gateway.Tokens.TokenDto token)
+        {
+            return new Token()
+            {
+                Type = token.Type,
+                Identifier = ESDTIdentifierValue.From(token.Identifier),
+                Name = token.Name,
+                Ticker = token.Ticker ?? token.Identifier.GetTicker(),
+                Owner = token.Owner != null ? Address.FromBech32(token.Owner) : Address.FromBytes(new byte[] { 0 }),
+                Minted = token.Minted,
+                Burnt = token.Burnt,
+                //InitialMinted = token.InitialMinted is null ? null : ESDTAmount.From(token.InitialMinted,
+                //                                                     ESDT.TOKEN(token.Name, token.Identifier, token.Decimals)),
+                Decimals = token.Decimals,
+                IsPaused = token.IsPaused,
+                //Assets = token.Assets,
+                //Accounts = token.Accounts != BigInteger.MinusOne ? token.Accounts : BigInteger.MinusOne,
+                //Transactions = token.Transactions != BigInteger.MinusOne ? token.Transactions : BigInteger.MinusOne,
+                Properties = TokenProperties.From(token.CanFreeze,
+                                                  token.CanWipe,
+                                                  token.CanPause,
+                                                  token.CanMint,
+                                                  token.CanBurn,
+                                                  token.CanUpgrade,
+                                                  token.CanChangeOwner,
+                                                  token.CanAddSpecialRoles),
+                //Price = token.Price,
+                //MarketCap = token.MarketCap,
+                //Supply = token.Supply,
+                //CirculatingSupply = token.CirculatingSupply,
+                //Roles = TokenRoles.From(token.Roles)
+            };
+        }
+
 
         /// <summary>
         /// Creates a new array of Tokens from data
