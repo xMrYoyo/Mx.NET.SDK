@@ -40,7 +40,7 @@ namespace Mx.NET.SDK.Core.Domain.Abi
             return new EventDefinition(identifier, inputs.ToArray());
         }
 
-        private TypeValue GetTypeValue(string type)
+        public TypeValue GetTypeValue(string type)
         {
             var pattern = new Regex("^(.*?)<(.*)>$");
             if (pattern.IsMatch(type))

@@ -1,4 +1,5 @@
 ﻿using Mx.NET.SDK.Core.Domain.Helper;
+using System.Collections.Generic;
 
 namespace Mx.NET.SDK.Core.Domain.Values
 {
@@ -23,7 +24,12 @@ namespace Mx.NET.SDK.Core.Domain.Values
 
         public override string ToJson()
         {
-            return JsonUnqtWrapper.Serialize(Variant.Discriminant.ToJson());
+            var dict = new Dictionary<string, object>
+            {
+                { Variant.Name, Variant.Discriminant.ToJson() }
+            };
+
+            return JsonUnqtWrapper.Serialize(dict);
         }
     }
 }
