@@ -21,7 +21,7 @@ namespace Mx.NET.SDK.Provider.Gateway
         /// This endpoint allows one to query the status of a given Shard.
         /// </summary>
         /// <param name="shard">Shard</param>
-        /// <returns><see cref="ShardStatusDto"/></returns>
-        Task<ShardStatusDto> GetShardStatus(long shard);
+        /// <returns><see cref="ShardStatusDataDto"/></returns>
+        Task<ShardStatusDataDto> GetShardStatus(long shard);
     }
 }

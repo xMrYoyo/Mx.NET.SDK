@@ -1,5 +1,6 @@
 ﻿using Mx.NET.SDK.Configuration;
 using Mx.NET.SDK.Core.Domain.Helper;
+using Mx.NET.SDK.Core.Domain.Values;
 using Mx.NET.SDK.Domain.Exceptions;
 using Mx.NET.SDK.Provider.Dtos.Common.QueryVm;
 using Mx.NET.SDK.Provider.Dtos.Common.Transactions;
@@ -8,7 +9,10 @@ using Mx.NET.SDK.Provider.Dtos.Gateway.Addresses;
 using Mx.NET.SDK.Provider.Dtos.Gateway.Blocks;
 using Mx.NET.SDK.Provider.Dtos.Gateway.ESDTs;
 using Mx.NET.SDK.Provider.Dtos.Gateway.Network;
+using Mx.NET.SDK.Provider.Dtos.Gateway.Tokens;
 using Mx.NET.SDK.Provider.Dtos.Gateway.Transactions;
+using Newtonsoft.Json.Bson;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -106,6 +110,43 @@ namespace Mx.NET.SDK.Provider
         {
             return await Get<EsdtTokenData>($"address/{address}/esdt/{tokenIdentifier}");
         }
+        public async Task<TokenDataDto> GetToken(string tokenIdentifier)
+        {
+            var query = await QueryVm(new QueryVmRequestDto()
+            {
+                ScAddress = "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u",
+                FuncName = "getTokenProperties",
+                Args = new string[]
+                {
+                   Converter.ToHexString(tokenIdentifier)
+                }
+            });
+
+            var token = new TokenDataDto() { Token = new TokenDto() { Identifier = tokenIdentifier } };
+
+            if (query.Data.ReturnData.Length > 0)
+            {
+                token.Token.Name = Converter.FromBase64ToUtf8(query.Data.ReturnData[0]);
+                token.Token.Type = Converter.FromBase64ToUtf8(query.Data.ReturnData[1]);
+                token.Token.Address = Address.FromBytes(Convert.FromBase64String(query.Data.ReturnData[2]));
+                //token.Token.TotalSupply = Converter.FromBase64ToUtf8(query.Data.ReturnData[3]);
+                token.Token.Burnt = Converter.FromBase64ToUtf8(query.Data.ReturnData[4]);
+                token.Token.Decimals = int.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[5]).Split('-')[1]);
+                token.Token.IsPaused = bool.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[6]).Split('-')[1]);
+                token.Token.CanUpgrade = bool.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[7]).Split('-')[1]);
+                token.Token.CanMint = bool.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[8]).Split('-')[1]);
+                token.Token.CanBurn = bool.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[9]).Split('-')[1]);
+                token.Token.CanChangeOwner = bool.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[10]).Split('-')[1]);
+                token.Token.CanPause = bool.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[11]).Split('-')[1]);
+                token.Token.CanFreeze = bool.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[12]).Split('-')[1]);
+            }
+            else
+            {
+
+            }
+
+            return token;
+        }
 
         #endregion
 
@@ -150,9 +191,9 @@ namespace Mx.NET.SDK.Provider
             return await Get<NetworkEconomicsDataDto>("network/economics");
         }
 
-        public async Task<ShardStatusDto> GetShardStatus(long shard)
+        public async Task<ShardStatusDataDto> GetShardStatus(long shard)
         {
-            return await Get<ShardStatusDto>($"network/status/{shard}");
+            return await Get<ShardStatusDataDto>($"network/status/{shard}");
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using Mx.NET.SDK.Provider.Dtos.Gateway.ESDTs;
+using Mx.NET.SDK.Provider.Dtos.Gateway.Tokens;
 using System.Threading.Tasks;
 
 namespace Mx.NET.SDK.Provider.Gateway
@@ -19,5 +20,12 @@ namespace Mx.NET.SDK.Provider.Gateway
         /// <param name="tokenIdentifier">The token identifier.</param>
         /// <returns><see cref="EsdtTokenData"/></returns>
         Task<EsdtTokenData> GetEsdtToken(string address, string tokenIdentifier);
+
+        /// <summary>
+        /// Returns the properties of a token for specific Identifier.
+        /// </summary>
+        /// <param name="tokenIdentifier">The token identifier.</param>
+        /// <returns><see cref="TokenDto"/></returns>
+        Task<TokenDataDto> GetToken(string tokenIdentifier);
     }
 }
