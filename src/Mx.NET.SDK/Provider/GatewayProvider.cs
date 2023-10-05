@@ -11,7 +11,6 @@ using Mx.NET.SDK.Provider.Dtos.Gateway.ESDTs;
 using Mx.NET.SDK.Provider.Dtos.Gateway.Network;
 using Mx.NET.SDK.Provider.Dtos.Gateway.Tokens;
 using Mx.NET.SDK.Provider.Dtos.Gateway.Transactions;
-using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -129,7 +128,7 @@ namespace Mx.NET.SDK.Provider
                 token.Token.Name = Converter.FromBase64ToUtf8(query.Data.ReturnData[0]);
                 token.Token.Type = Converter.FromBase64ToUtf8(query.Data.ReturnData[1]);
                 token.Token.Address = Address.FromBytes(Convert.FromBase64String(query.Data.ReturnData[2]));
-                //token.Token.TotalSupply = Converter.FromBase64ToUtf8(query.Data.ReturnData[3]);
+                token.Token.TotalSupply = Converter.FromBase64ToBigInteger(query.Data.ReturnData[3]);
                 token.Token.Burnt = Converter.FromBase64ToUtf8(query.Data.ReturnData[4]);
                 token.Token.Decimals = int.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[5]).Split('-')[1]);
                 token.Token.IsPaused = bool.Parse(Converter.FromBase64ToUtf8(query.Data.ReturnData[6]).Split('-')[1]);
@@ -167,16 +166,31 @@ namespace Mx.NET.SDK.Provider
             return await Post<TransactionCostResponseDto>("transaction/cost", transactionRequestDto);
         }
 
-        public async Task<TransactionDto> GetTransaction(string txHash, bool withResults = false)
+        public async Task<TransactionDataResponseDto> GetTransaction(string txHash, bool withResults = false)
         {
-            return await GetTransaction<TransactionDto>(txHash, withResults);
+            return await GetTransaction<TransactionDataResponseDto>(txHash, withResults);
+        }
+        public async Task<TransactionStatusResponseDto> GetTransactionStatus(string txHash)
+        {
+            return await Get<TransactionStatusResponseDto>($"transaction/{txHash}/status");
+        }
+        public async Task<TransactionStatusResponseDto> GetTransactionProcessStatus(string txHash)
+        {
+            return await Get<TransactionStatusResponseDto>($"transaction/{txHash}/process-status");
         }
 
         public async Task<Transaction> GetTransaction<Transaction>(string txHash, bool withResults = false)
         {
             return await Get<Transaction>($"transaction/{txHash}?withResults={withResults}");
         }
+        
+        public async Task<TransactionPoolResponseDto> GetTransactionsPool(long? shardId = null, string fields = null)
+        {
+            var shardIdQuery = shardId == null ? "" : $"shard-id={shardId}&";
+            var fieldsQuery = fields == null ? "" : $"fields={fields}";
 
+            return await Get<TransactionPoolResponseDto>($"transaction/pool/?{shardIdQuery}{fieldsQuery}");
+        }
         #endregion
 
         #region network
@@ -191,7 +205,7 @@ namespace Mx.NET.SDK.Provider
             return await Get<NetworkEconomicsDataDto>("network/economics");
         }
 
-        public async Task<ShardStatusDataDto> GetShardStatus(long shard)
+        public async Task<ShardStatusDataDto> GetShardStatus(long? shard = null)
         {
             return await Get<ShardStatusDataDto>($"network/status/{shard}");
         }
@@ -205,24 +219,24 @@ namespace Mx.NET.SDK.Provider
 
         #region blocks
 
-        public async Task<BlockDto> GetBlockByNonce(long nonce, long shard, bool withTxs = false)
+        public async Task<BlockDataDto> GetBlockByNonce(long nonce, long shard, bool withTxs = false)
         {
-            return await Get<BlockDto>($"/block/by-nonce/{nonce}?withTxs={withTxs}&withResults=true");
+            return await Get<BlockDataDto>($"/block/by-nonce/{nonce}?withTxs={withTxs}&withResults=true");
         }
 
-        public async Task<BlockDto> GetBlockByHash(string hash, long shard, bool withTxs = false)
+        public async Task<BlockDataDto> GetBlockByHash(string hash, long shard, bool withTxs = false)
         {
-            return await Get<BlockDto>($"/block/{shard}/by-hash/{hash}?withTxs={withTxs}");
+            return await Get<BlockDataDto>($"/block/{shard}/by-hash/{hash}?withTxs={withTxs}");
         }
 
-        public async Task<InternalBlockDto> GetInternalBlockByNonce(long nonce)
+        public async Task<InternalBlockResponseDto> GetInternalBlockByNonce(long nonce)
         {
-            return await Get<InternalBlockDto>($"/internal/json/shardblock/by-nonce/{nonce}");
+            return await Get<InternalBlockResponseDto>($"/internal/json/shardblock/by-nonce/{nonce}");
         }
 
-        public async Task<InternalBlockDto> GetInternalBlockByHash(string hash)
+        public async Task<InternalBlockResponseDto> GetInternalBlockByHash(string hash)
         {
-            return await Get<InternalBlockDto>($"/internal/json/shardblock/by-hash/{hash}");
+            return await Get<InternalBlockResponseDto>($"/internal/json/shardblock/by-hash/{hash}");
         }
 
         #endregion

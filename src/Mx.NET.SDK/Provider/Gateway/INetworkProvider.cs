@@ -22,6 +22,6 @@ namespace Mx.NET.SDK.Provider.Gateway
         /// </summary>
         /// <param name="shard">Shard</param>
         /// <returns><see cref="ShardStatusDataDto"/></returns>
-        Task<ShardStatusDataDto> GetShardStatus(long shard);
+        Task<ShardStatusDataDto> GetShardStatus(long? shard = null);
     }
 }

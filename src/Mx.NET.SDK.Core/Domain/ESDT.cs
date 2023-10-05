@@ -17,6 +17,12 @@ namespace Mx.NET.SDK.Core.Domain
         public string Ticker { get; }
         public int DecimalPrecision { get; }
 
+        public string Address => Identifier;
+        public int Decimals => DecimalPrecision;
+        public string Symbol => Ticker;
+        public BigInteger? TotalSupply { get; set; }
+
+
         public ESDT(string name, string identifier, string collection, string ticker, int decimalPrecision)
         {
             //if (!_nameValidation.IsMatch(name))

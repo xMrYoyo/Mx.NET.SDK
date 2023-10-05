@@ -24,7 +24,18 @@ namespace Mx.NET.SDK.Wallet.Wallet
                 bytes.Skip(32).Take(32).ToArray()
             };
         }
-
+        /// <summary>
+        /// Save a PemFile object to a pem file path
+        /// </summary>
+        /// <param name="filePath">JSON String</param>
+        /// <param name="file">PemFile Object</param>
+        /// <returns>PemFile object</returns>
+        public static void SaveToFile(string filePath, string file)
+        {
+            StreamWriter writer = new(filePath);
+            writer.Write(file);
+            writer.Close();
+        }
         public static byte[] DecryptSecretKey(string filePath, int index = 0)
         {
             var text = FromFilePath(filePath);

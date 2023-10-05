@@ -203,14 +203,19 @@ namespace Mx.NET.SDK.Core.Domain
         /// <param name="value"></param>
         /// <returns></returns>
         // ReSharper disable once InconsistentNaming
-        public static ESDTAmount EGLD(string value)
+        public static ESDTAmount EGLD(decimal value)
         {
-            var egld = Domain.ESDT.EGLD();
-            var split = value.Split('.');
-            var integerPart = split.FirstOrDefault() ?? "0";
-            var decimalPart = split.Length == 2 ? split[1] : string.Empty;
-            var full = $"{integerPart}{decimalPart.PadRight(egld.DecimalPrecision, '0')}";
-            return new ESDTAmount(full, Domain.ESDT.EGLD());
+            return new ESDTAmount(value, Domain.ESDT.EGLD());
+        }
+        /// <summary>
+        /// Creates a token amount object from an eGLD value (denomination will be applied).
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        // ReSharper disable once InconsistentNaming
+        public static ESDTAmount EGLD(BigInteger value)
+        {
+            return new ESDTAmount(value, Domain.ESDT.EGLD());
         }
 
         /// <summary>

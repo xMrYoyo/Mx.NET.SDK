@@ -28,7 +28,19 @@ namespace Mx.NET.SDK.Wallet.Wallet
             var json = File.ReadAllText(filePath);
             return JsonWrapper.Deserialize<KeyFile>(json);
         }
-
+        /// <summary>
+        /// Save a KeyFile object from a json file path
+        /// </summary>
+        /// <param name="filePath">JSON String</param>
+        /// <param name="file">KeyFile Object</param>
+        /// <returns>KeyFile object</returns>
+        public static void SaveToFile(string filePath, KeyFile file)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            StreamWriter writer = new StreamWriter(filePath);
+            writer.Write(JsonWrapper.Serialize(file));
+            writer.Close();
+        }
         public static byte[] DecryptSecretKey(string filePath, string password)
         {
             var keyFile = FromFilePath(filePath);

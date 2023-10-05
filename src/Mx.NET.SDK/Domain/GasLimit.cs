@@ -53,7 +53,7 @@ namespace Mx.NET.SDK.Domain
         /// <returns>A GasLimit</returns>
         public static GasLimit ForSmartContractCall(NetworkConfig networkConfig, TransactionRequest transaction)
         {
-            var value = networkConfig.MinGasLimit + 6000000;
+            var value = networkConfig.MinGasLimit + 50000000;
             return new GasLimit(value) + FromData(networkConfig, transaction.Data);
         }
     }

@@ -338,7 +338,7 @@ namespace Mx.NET.SDK.TransactionsManager
             var transaction = TransactionRequest.CreateCallSmartContractTransactionRequest(networkConfig,
                                                                                            account,
                                                                                            SYSTEM_SMART_CONTRACT_ADDRESS,
-                                                                                           ESDTAmount.EGLD("0.05"),
+                                                                                           ESDTAmount.EGLD(0.05m),
                                                                                            ISSUE,
                                                                                            arguments.ToArray());
 

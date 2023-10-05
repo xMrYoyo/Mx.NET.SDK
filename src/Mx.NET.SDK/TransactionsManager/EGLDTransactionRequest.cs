@@ -56,8 +56,8 @@ namespace Mx.NET.SDK.TransactionsManager
                                                                                            methodName,
                                                                                            methodArgs);
             //GasLimit: 500000 + extra for SC call
-            transaction.SetGasLimit(500000 + GasLimit.FromData(networkConfig, transaction.Data));
-
+            transaction.SetGasLimit(15000000 + GasLimit.FromData(networkConfig, transaction.Data));
+            
             return transaction;
         }
 

@@ -346,7 +346,7 @@ namespace Mx.NET.SDK.TransactionsManager
             var transaction = TransactionRequest.CreateCallSmartContractTransactionRequest(networkConfig,
                                                                                            account,
                                                                                            SYSTEM_SMART_CONTRACT_ADDRESS,
-                                                                                           ESDTAmount.EGLD("0.05"),
+                                                                                           ESDTAmount.EGLD(0.05m),
                                                                                            ISSUE_NON_FUNGIBLE,
                                                                                            arguments.ToArray());
 
@@ -373,7 +373,7 @@ namespace Mx.NET.SDK.TransactionsManager
             CollectionProperties properties = null,
             params IBinaryType[] args)
         {
-            var cost = networkConfig.ChainId == "T" ? ESDTAmount.EGLD("5") : ESDTAmount.EGLD("0.05");
+            var cost = networkConfig.ChainId == "T" ? ESDTAmount.EGLD(5m) : ESDTAmount.EGLD(0.05m);
 
             if (!_nameValidation.IsMatch(collectionName))
                 throw new ArgumentException("Length should be between 3 and 20 characters, alphanumeric characters only", nameof(collectionName));
@@ -437,7 +437,7 @@ namespace Mx.NET.SDK.TransactionsManager
             CollectionProperties properties = null,
             params IBinaryType[] args)
         {
-            var cost = networkConfig.ChainId == "T" ? ESDTAmount.EGLD("5") : ESDTAmount.EGLD("0.05");
+            var cost = networkConfig.ChainId == "T" ? ESDTAmount.EGLD(5m) : ESDTAmount.EGLD(0.05m);
 
             if (!_nameValidation.IsMatch(collectionName))
                 throw new ArgumentException("Length should be between 3 and 20 characters, alphanumeric characters only", nameof(collectionName));

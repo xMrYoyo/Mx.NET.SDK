@@ -9,8 +9,8 @@ namespace Mx.NET.SDK.Provider.Dtos.Gateway.Addresses
         public AllStorageDto(Dictionary<string, string> pairs)
         {
             Pairs = pairs.ToDictionary(
-                kvp => Converter.HexToString(kvp.Key),
-                kvp => Converter.HexToString(kvp.Value));
+                kvp => Converter.FromHexToUtf8(kvp.Key),
+                kvp => Converter.FromHexToUtf8(kvp.Value));
         }
 
         public Dictionary<string, string> Pairs { get; set; }

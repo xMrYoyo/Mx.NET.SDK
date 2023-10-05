@@ -133,6 +133,29 @@ namespace Mx.NET.SDK.Domain.Data.Common
                 ReturnMessage = scr.ReturnMessage
             }).ToArray();
         }
+        public static SmartContractResult[] From(Mx.NET.SDK.Provider.Dtos.Gateway.Transactions.SmartContractResultDto[] scrs)
+        {
+            if (scrs == null) return null;
+
+            return scrs.Select(scr => new SmartContractResult()
+            {
+                Hash = scr.Hash,
+                //ResultDate = scr.Timestamp.ToDateTime(),
+                Nonce = scr.Nonce,
+                GasLimit = new GasLimit(scr.GasLimit),
+                GasPrice = scr.GasPrice,
+                Value = ESDTAmount.From(scr.Value), //always EGLD
+                Sender = Address.FromBech32(scr.Sender),
+                Receiver = Address.FromBech32(scr.Receiver),
+                //SenderAssets = Assets.From(scr.SenderAssets),
+                //ReceiverAssets = Assets.From(scr.ReceiverAssets),
+                Data = DataCoder.DecodeData(scr.Data),
+                PrevTxHash = scr.PrevTxHash,
+                OriginalTxHash = scr.OriginalTxHash,
+                CallType = scr.CallType.ToString(),
+                //ReturnMessage = scr.ReturnMessage
+            }).ToArray();
+        }
     }
 
     public class Log

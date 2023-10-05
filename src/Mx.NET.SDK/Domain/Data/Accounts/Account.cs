@@ -195,7 +195,40 @@ namespace Mx.NET.SDK.Domain.Data.Accounts
             PendingGuardian = guardianData.PendingGuardian?.Address;
             PendingServiceUID = guardianData.PendingGuardian?.ServiceUID ?? string.Empty;
         }
+        /// <summary>
+        /// Creates a new account object from Gateway data (No guardian data available - use SyncGuardian method)
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns><see cref="Account"/></returns>
+        public static Account From(string address)
+        {
+            var addressDto = Address.FromBech32(address);
 
+            return new Account()
+            {
+                Address = addressDto,
+                Nonce = 0,
+                Balance = ESDTAmount.From(0, ESDT.EGLD()),
+                UserName = "",
+                RootHash = "",
+            };
+        }
+        /// <summary>
+        /// Creates a new account object from Gateway data (No guardian data available - use SyncGuardian method)
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns><see cref="Account"/></returns>
+        public static Account From(Address address)
+        {
+            return new Account()
+            {
+                Address = address,
+                Nonce = 0,
+                Balance = ESDTAmount.From(0, ESDT.EGLD()),
+                UserName = "",
+                RootHash = "",
+            };
+        }
         /// <summary>
         /// Creates a new account object from Gateway data (No guardian data available - use SyncGuardian method)
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -57,7 +58,7 @@ namespace Mx.NET.SDK.Core.Domain.Helper
             return hex;
         }
 
-        public static string HexToString(string hex)
+        public static string FromHexToUtf8(string hex)
         {
             return Encoding.UTF8.GetString(FromHexString(hex));
         }
@@ -75,10 +76,11 @@ namespace Mx.NET.SDK.Core.Domain.Helper
 
             return bytes;
         }
+        public static BigInteger FromHexToBigInt(string hex) => BigInteger.Parse("0" + hex, NumberStyles.AllowHexSpecifier);
 
         public static string ToHexString(string utf8Value)
         {
-            return ToHexString(Encoding.UTF8.GetBytes(utf8Value));
+            return ToHexString(Encoding.UTF8.GetBytes(utf8Value)).ToLower();
         }
 
         public static string ToBase64String(string value)
@@ -102,13 +104,9 @@ namespace Mx.NET.SDK.Core.Domain.Helper
         }
         public static BigInteger FromBase64ToBigInteger(string base64EncodedData)
         {
-            // Convierte la cadena Base64 a bytes
-            byte[] bytes = Convert.FromBase64String(base64EncodedData);
+            var hex = Converter.FromBase64ToHex(base64EncodedData);
 
-            // Convierte los bytes en un valor BigInteger
-            BigInteger bigIntegerValue = new BigInteger(bytes);
-            
-            return bigIntegerValue;
+            return Converter.FromHexToBigInt(hex);
         }
     }
 }

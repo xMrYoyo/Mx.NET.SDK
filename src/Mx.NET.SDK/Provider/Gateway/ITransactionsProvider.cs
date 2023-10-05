@@ -32,9 +32,20 @@ namespace Mx.NET.SDK.Provider.Gateway
         /// </summary>
         /// <param name="txHash">The transaction hash</param>
         /// <param name="withResults">Get Smart Contract results</param>
-        /// <returns><see cref="TransactionDto"/></returns>
-        Task<TransactionDto> GetTransaction(string txHash, bool withResults = false);
-
+        /// <returns><see cref="TransactionDataResponseDto"/></returns>
+        Task<TransactionDataResponseDto> GetTransaction(string txHash, bool withResults = false);
+        /// <summary>
+        /// This endpoint allows one to query the status of a Transaction.
+        /// </summary>
+        /// <param name="txHash">The transaction hash</param>
+        /// <returns><see cref="TransactionStatusResponseDto"/></returns>
+        Task<TransactionStatusResponseDto> GetTransactionStatus(string txHash);
+        /// <summary>
+        /// This endpoint allows one to query the status of a Transaction.
+        /// </summary>
+        /// <param name="txHash">The transaction hash</param>
+        /// <returns><see cref="TransactionStatusResponseDto"/></returns>
+        Task<TransactionStatusResponseDto> GetTransactionProcessStatus(string txHash);
         /// <summary>
         /// This endpoint allows one to query the details of a Transaction.
         /// </summary>
@@ -42,5 +53,13 @@ namespace Mx.NET.SDK.Provider.Gateway
         /// <param name="withResults">Get Smart Contract results</param>
         /// <returns>Your custom Transaction object</returns>
         Task<Transaction> GetTransaction<Transaction>(string txHash, bool withResults = false);
+
+        /// <summary>
+        /// This endpoint allows one to query the pool of transactions.
+        /// </summary>
+        /// <param name="shardId">The shard id</param>
+        /// <param name="fields">Fields to get</param>
+        /// <returns>List of transactions in pool</returns>
+        Task<TransactionPoolResponseDto> GetTransactionsPool(long? shardId = null, string? fields = null);
     }
 }
