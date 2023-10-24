@@ -25,13 +25,14 @@ namespace Mx.NET.SDK.Provider
         private readonly HttpClient _httpGatewayClient;
         public GatewayNetworkConfiguration NetworkConfiguration { get; }
 
-        public GatewayProvider(GatewayNetworkConfiguration configuration, Dictionary<string, string> extraRequestHeaders = null)
+        public GatewayProvider(GatewayNetworkConfiguration configuration, Dictionary<string, string> extraRequestHeaders = null, int timeOutInSecs = 3)
         {
             NetworkConfiguration = configuration;
 
             _httpGatewayClient = new HttpClient
             {
-                BaseAddress = configuration.GatewayUri
+                BaseAddress = configuration.GatewayUri,
+                Timeout = TimeSpan.FromSeconds(timeOutInSecs)
             };
             if (extraRequestHeaders != null)
             {
